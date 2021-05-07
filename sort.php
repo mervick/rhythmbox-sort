@@ -97,9 +97,9 @@ $playlistsXml = simplexml_load_string($playlistsContents);
 
 // Load XML of playlists file
 if ($playlistsXml === false) {
-    echo "Failed loading XML in file $playlistsFile: ";
+    echo "Failed loading XML in file $playlistsFile:\n";
     foreach(libxml_get_errors() as $error) {
-        echo "<br>", $error->message;
+        echo $error->message, "\n";
     }
     exit(6);
 }
@@ -128,9 +128,9 @@ foreach ($playlistsXml->xpath("playlist") as $playlistXml) {
         $rhythmdbXml = simplexml_load_string($rhythmdbContents);
 
         if ($rhythmdbXml === false) {
-            echo "Failed loading XML in file $rhythmdbFile: ";
+            echo "Failed loading XML in file $rhythmdbFile:\n";
             foreach(libxml_get_errors() as $error) {
-                echo "<br>", $error->message;
+                echo $error->message, "\n";
             }
             exit(9);
         }
@@ -188,6 +188,7 @@ foreach ($playlistsXml->xpath("playlist") as $playlistXml) {
         } else {
             // Create sorting function by string values
             $sortFunc = function(array $a, array $b) use ($sort, $order) {
+                $result = 0;
                 foreach ($sort as $attr) {
                     $result = strnatcmp($a['sort'][$attr], $b['sort'][$attr]) * $order;
                     if ($result !== 0) break;
@@ -216,5 +217,5 @@ foreach ($playlistsXml->xpath("playlist") as $playlistXml) {
     }
 }
 
-echo "There is no playlist with name \"$playlist\"";
+echo "There is no playlist with name \"$playlist\"\n";
 exit(11);
