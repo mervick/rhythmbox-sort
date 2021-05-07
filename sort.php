@@ -6,7 +6,7 @@ $sortAttrs = [
         ['title'], 'asc', 'string'
     ],
     'artist' => [
-        ['artist', 'album', 'disc-number', 'track-number'], 'asc', 'string'
+        ['artist', 'date', 'album', 'disc-number', 'track-number'], 'asc', 'string'
     ],
     'album' => [
         ['album', 'disc-number', 'track-number', 'title'], 'asc', 'string'
