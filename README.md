@@ -7,7 +7,6 @@ cd ~/.local/share
 git clone https://github.com/mervick/sort-rhythmbox
 chmod +x rhythmbox-sort/rhythmbox-sort
 ln -s $(pwd)/rhythmbox-sort/rhythmbox-sort ~/.local/bin/rhythmbox-sort
-
 ```
 
 ### Usage:
