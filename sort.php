@@ -1,34 +1,5 @@
 <?php
 
-$options = getopt('hp:o::s::d::', ['help', 'playlist:', 'sort::', 'order::', 'data-dir::']);
-
-if (isset($options['h']) || isset($options['help'])) {
-    echo <<< TXT
-Sort tracks in the rhythmbox playlist
-Usage:
-    sort-rhythmbox [-h|--help] [-p=PLAYLIST|--playlist=PLAYLIST] [-o=ORDER|--order=ORDER]
-                   [-s=SORT|--sort=SORT] [-d=DIRECTORY|--data-dir=DIRECTORY]
-
-TXT;
-    exit;
-}
-
-// Get console params and set default values
-$dataDir = $options['d'] ?? $options['data-dir'] ?? '~/.local/share/rhythmbox';
-$sortAttr = strtolower($options['s'] ?? $options['sort'] ?? 'title');
-$order = strtolower($options['o'] ?? $options['order'] ?? 'default');
-$playlist = $options['p'] ?? $options['playlist'] ?? null;
-
-if (!$playlist) {
-    echo "Option 'playlist' is required\n";
-    exit(1);
-}
-
-if ($playlist === 'rated') {
-    echo "Option 'playlist' is invalid\n";
-    exit(2);
-}
-
 // Sorting attributes table
 $sortAttrs = [
     'title' => [
@@ -56,16 +27,54 @@ $sortAttrs = [
         ['rating', 'play-count'], 'desc', 'number'
     ],
 ];
+$validAttrs = implode(', ', array_keys($sortAttrs));
 
 $validOrders = ['asc', 'desc', 'default'];
+$validOrdersStr = implode(', ', $validOrders);
+
+$defaultDataDir = '~/.local/share/rhythmbox';
+
+$options = getopt('hp:o::s::d::', ['help', 'playlist:', 'sort::', 'order::', 'data-dir::']);
+
+if (isset($options['h']) || isset($options['help'])) {
+    echo <<< TXT
+Sort tracks in the rhythmbox playlist
+Usage:
+    sort-rhythmbox [-h|--help] [-p=PLAYLIST|--playlist=PLAYLIST] [-o=ORDER|--order=ORDER]
+                   [-s=COLUMN|--sort=COLUMN] [-d=PATH|--data-dir=PATH]
+PARAMS:
+    -p=<PLAYLIST> | --playlist=<PLAYLIST>   - playlist name, case-sensitive
+    -s=<COLUMN> | --sort=<COLUMN>           - sort by column, one of $validAttrs
+    -o=<ORDER>  | --order=<ORDER>           - order type, one of $validOrdersStr
+    -d=<PATH>   | --data-dir=<PATH>         - path to rhythmbox data dir where are located playlists.xml and rhythmdb.xml files
+                                              by default it's located at $defaultDataDir
+    -h | --help                             - show this help
+
+TXT;
+    exit;
+}
+
+// Get console params and set default values
+$dataDir = $options['d'] ?? $options['data-dir'] ?? $defaultDataDir;
+$sortAttr = strtolower($options['s'] ?? $options['sort'] ?? 'title');
+$order = strtolower($options['o'] ?? $options['order'] ?? 'default');
+$playlist = $options['p'] ?? $options['playlist'] ?? null;
+
+if (!$playlist) {
+    echo "Option 'playlist' is required\n";
+    exit(1);
+}
+
+if ($playlist === 'rated') {
+    echo "Option 'playlist' is invalid\n";
+    exit(2);
+}
 if (!in_array($order, $validOrders)) {
-    $validOrders = implode(', ', $validOrders);
-    echo "Option 'order' is invalid, can be one of: $validOrders\n";
+    echo "Option 'order' is invalid, can be one of: $validOrdersStr\n";
     exit(3);
 }
 
 if (!isset($sortAttrs[$sortAttr])) {
-    $validAttrs = implode(', ', array_keys($sortAttrs));
     echo "Option 'sort' is invalid, can be one of: $validAttrs\n";
     exit(4);
 }
