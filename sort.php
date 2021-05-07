@@ -6,10 +6,10 @@ $sortAttrs = [
         ['title'], 'asc', 'string'
     ],
     'artist' => [
-        ['artist', 'album'], 'asc', 'string'
+        ['artist', 'album', 'disc-number', 'track-number'], 'asc', 'string'
     ],
     'album' => [
-        ['album', 'title'], 'asc', 'string'
+        ['album', 'disc-number', 'track-number', 'title'], 'asc', 'string'
     ],
     'play-count' => [
         ['play-count'], 'desc', 'number'
@@ -87,7 +87,7 @@ $order = $order === 'asc' ? 1 : -1;
 $sort = $sortAttrs[$sortAttr][0];
 $type = $sortAttrs[$sortAttr][2];
 
-// Fix ~ to home dir of current user
+// Replace ~ to home dir of current user
 $homeDir = shell_exec("cd; pwd");
 $dataDir = str_replace('~', trim($homeDir), $dataDir);
 
