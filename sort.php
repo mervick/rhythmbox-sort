@@ -40,7 +40,7 @@ if (isset($options['h']) || isset($options['help'])) {
     echo <<< TXT
 Sort tracks in the rhythmbox playlist
 Usage:
-    sort-rhythmbox [-h|--help] [-p=PLAYLIST|--playlist=PLAYLIST] [-o=ORDER|--order=ORDER]
+    rhythmbox-sort [-h|--help] [-p=PLAYLIST|--playlist=PLAYLIST] [-o=ORDER|--order=ORDER]
                    [-s=COLUMN|--sort=COLUMN] [-d=PATH|--data-dir=PATH]
 PARAMS:
     -p=<PLAYLIST> | --playlist=<PLAYLIST>   - playlist name, case-sensitive
