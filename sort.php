@@ -110,33 +110,8 @@ if ($playlistsXml->getName() !== 'rhythmdb-playlists') {
     exit(7);
 }
 
-/**
- * Rhythmdb Playlist
- *
- * @mixin SimpleXMLElement
- * @property SimpleXMLElement $location
- */
-class RhythmdbPlaylist {}
-
-/**
- * Rhythmdb Song
- *
- * @mixin SimpleXMLElement
- * @property SimpleXMLElement $title
- * @property SimpleXMLElement $genre
- * @property SimpleXMLElement $artist
- * @property SimpleXMLElement $album
- * @property SimpleXMLElement $duration
- * @property SimpleXMLElement $location
- * @property SimpleXMLElement $mtime
- * @property SimpleXMLElement $bitrate
- * @property SimpleXMLElement $date
- * @property SimpleXMLElement $composer
- */
-class RhythmdbSong {}
-
 // Searching a playlist
-foreach ($playlistsXml->xpath("playlist") as $playlistXml /** @var RhythmdbPlaylist $playlistXml */) {
+foreach ($playlistsXml->xpath("playlist") as $playlistXml) {
 
     // Convert html entities
     $name = html_entity_decode($playlistXml->attributes()['name'], ENT_XML1 | ENT_QUOTES, 'UTF-8');
@@ -166,12 +141,12 @@ foreach ($playlistsXml->xpath("playlist") as $playlistXml /** @var RhythmdbPlayl
             exit(10);
         }
 
-        $files = (array)$playlistXml->location;
+        $files = (array)$playlistXml->{'location'};
         $songs = [];
 
         // Get attributes of songs for sorting
-        foreach ($rhythmdbXml->xpath('entry[@type="song"]') as $songXml /** @var RhythmdbSong $songXml */) {
-            $key = array_search($songXml->location, $files);
+        foreach ($rhythmdbXml->xpath('entry[@type="song"]') as $songXml) {
+            $key = array_search($songXml->{'location'}, $files);
 
             if ($key !== false) {
                 $songs[$key] = [];
