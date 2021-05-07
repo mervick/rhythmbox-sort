@@ -46,6 +46,12 @@ $sortAttrs = [
     'count' => [
         ['play-count'], 'desc', 'number'
     ],
+    'year' => [
+        ['date'], 'asc', 'number'
+    ],
+    'date' => [
+        ['date'], 'asc', 'number'
+    ],
     'rating' => [
         ['rating', 'play-count'], 'desc', 'number'
     ],
@@ -226,7 +232,10 @@ foreach ($playlistsXml->xpath("playlist") as $playlistXml /** @var RhythmdbPlayl
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->loadXML($playlistsXml->asXML());
+
+        // Create backup
         copy($playlistsFile, $playlistsFile . '.' . date('Ymd\THis'));
+        // Save to rhythmdb playlists file
         file_put_contents($playlistsFile, $dom->saveXML());
         exit;
     }
