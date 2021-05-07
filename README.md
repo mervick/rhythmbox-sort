@@ -23,3 +23,6 @@ PARAMS:
 -h | --help                             - show this help
 ```
 
+### Requirements:
+
+php >= 5.6
