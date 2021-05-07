@@ -4,7 +4,7 @@
 ## Installation
 ```
 cd ~/.local/share
-git clone https://github.com/mervick/sort-rhythmbox
+git clone https://github.com/mervick/rhythmbox-sort
 chmod +x rhythmbox-sort/rhythmbox-sort
 ln -s $(pwd)/rhythmbox-sort/rhythmbox-sort ~/.local/bin/rhythmbox-sort
 ```
