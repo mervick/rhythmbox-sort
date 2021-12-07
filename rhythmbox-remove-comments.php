@@ -104,19 +104,26 @@ foreach ($stack as $index => $songXml) {
 
     $custom = [];
 
-    if (empty($bitrate) && strtolower(fileExtension($location)) !== 'flac') {
-        $update = true;
-        $data = `ffprobe -i '$escapedFilename' -v quiet -show_entries stream=bit_rate -hide_banner -print_format json`;
-        $data = json_decode($data, true);
-        $bitrate = $data['streams'][0]['bit_rate'] ?? null;
-        if (!empty($bitrate)) {
-            $bitrate = round(intval($bitrate) / 1000);
+    if (strtolower(fileExtension($location)) !== 'flac') {
+        if (empty($bitrate)) {
+            $update = true;
+            $data = `ffprobe -i '$escapedFilename' -v quiet -show_entries stream=bit_rate -hide_banner -print_format json`;
+            $data = json_decode($data, true);
+            $bitrate = $data['streams'][0]['bit_rate'] ?? null;
+            if (!empty($bitrate)) {
+                $bitrate = round(intval($bitrate) / 1000);
+                $songXml->{'bitrate'} = $bitrate;
+            }
+        } elseif ($bitrate % 2 == 1) {
+            $update = true;
+            $bitrate++;
             $songXml->{'bitrate'} = $bitrate;
         }
     }
 
     if (!empty($albumArtist) && $albumArtist !== $artist) {
-        $custom[] = "--text-frame=TPE2:'$artist'";
+        $escapedArtist = str_replace("'", "'\\''", $artist);
+        $custom[] = "--text-frame=TPE2:'$escapedArtist'";
         $songXml->{'album-artist'} = $artist;
     }
 
@@ -127,7 +134,8 @@ foreach ($stack as $index => $songXml) {
         $percent = sprintf("%0.2f", $index / $all * 100);
         echo "$percent%  $filename\n";
         $custom = implode(' ', $custom);
-        `eyeD3 --remove-all-comments $removeTagsStr $custom '$escapedFilename' >/dev/null 2>/dev/null`;
+        `eyeD3 -1 --remove-all-comments '$escapedFilename' >/dev/null 2>/dev/null`;
+        `eyeD3 -2 --remove-all-comments $removeTagsStr $custom '$escapedFilename' >/dev/null 2>/dev/null`;
 //        echo "eyeD3 --remove-all-comments $removeTagsStr $custom '$filename' >/dev/null 2>/dev/null\n";
     }
 }
@@ -142,6 +150,7 @@ if ($update) {
     copy($rhythmdbFile, $rhythmdbFile . '.' . date('Ymd\THis'));
     // Save to rhythmdb playlists file
     file_put_contents($rhythmdbFile, $dom->saveXML());
+    file_put_contents($rhythmdbFile . '.1', $dom->saveXML());
     echo "Update $rhythmdbFile\n";
 }
 
